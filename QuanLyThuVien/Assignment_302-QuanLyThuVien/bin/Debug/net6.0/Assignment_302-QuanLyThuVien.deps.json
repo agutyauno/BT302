@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "Assignment_302-QuanLyThuVien/1.0.0": {
+        "runtime": {
+          "Assignment_302-QuanLyThuVien.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Assignment_302-QuanLyThuVien/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
