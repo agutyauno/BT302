@@ -64,14 +64,13 @@ namespace Assignment_302_QuanLyThuVien
                 }
             }
         }
-
+        
         public void UpdateBook()
         {
             Console.WriteLine("Cap nhat thong tin");
-            Book? find = books.Find(b => b.BookID == InputCheck.String("nhap ma so sach"));
-            if (find == null)
+            Book? b = SearchByID();
+            if (b == null)
             {
-                Console.WriteLine("Khong tim thay sach");
                 return;
             }
 
@@ -86,7 +85,7 @@ namespace Assignment_302_QuanLyThuVien
                         Console.WriteLine("Sua ten sach");
                         foreach (Book book in books)
                         {
-                            if (book.BookID == find.BookID)
+                            if (book.BookID == b.BookID)
                             {
                                 Console.WriteLine($"Ten sach cu: {book.Title}");
                                 book.BookID = InputCheck.String("Nhap ten sach moi");
@@ -99,7 +98,7 @@ namespace Assignment_302_QuanLyThuVien
                         Console.WriteLine("Sua ten tac gia");
                         foreach (Book book in books)
                         {
-                            if (book.BookID == find.BookID)
+                            if (book.BookID == b.BookID)
                             {
                                 Console.WriteLine($"Ten tac gia cu: {book.Author}");
                                 book.Author = InputCheck.String("Nhap ten tac gia moi");
@@ -112,7 +111,7 @@ namespace Assignment_302_QuanLyThuVien
                         Console.WriteLine("Sua nam xuat ban");
                         foreach (Book book in books)
                         {
-                            if (book.BookID == find.BookID)
+                            if (book.BookID == b.BookID)
                             {
                                 Console.WriteLine($"Nam xuat ban cu: {book.Year}");
                                 book.Year = InputCheck.Int("Nhap nam xuat ban moi");
@@ -129,12 +128,29 @@ namespace Assignment_302_QuanLyThuVien
                         break;
                 }
             }
-            ShowBook(find);
+            ShowBook(b);
         }
 
         public void RemoveBook()
         {
+            Console.WriteLine("Xoa sach ra khoi thu vien");
+            Book? b = SearchByID();
+            if (b == null)
+            {
+                return;
+            }
 
+            ShowBook(b);
+            switch (InputCheck.Int("Ban co muon xoa cuon sach nay?\n1. xac nhan | 2. tu choi"))
+            {
+                case 1:
+                    books.Remove(b);
+                    Console.WriteLine("Sach da duoc xoa");
+                    break;
+                default:
+                    Console.WriteLine("Sach khong duoc xoa");
+                    break;
+            }
         }
 
         #region show methods
@@ -196,6 +212,17 @@ namespace Assignment_302_QuanLyThuVien
                 Console.WriteLine("Khong tim thay sach");
             }
             ShowBook(find);
+        }
+
+        public Book? SearchByID()
+        {
+            Console.WriteLine("Tim kiem theo ma sach");
+            Book? find = books.Find(b => b.BookID == InputCheck.String("Nhap ma sach"));
+            if (find != null)
+            {
+                Console.WriteLine("Khong tim thay sach");
+            }
+            return find;
         }
         #endregion
 

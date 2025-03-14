@@ -85,5 +85,22 @@ namespace Assignment_302_QuanLyThuVien
             }
             return n;
         }
+
+        public static DateOnly GetDateOnly(string message = "", bool isNullAllow = false)
+        {
+            string? input;
+            DateOnly n;
+            while (true)
+            {
+                Console.Write(message);
+                input = Console.ReadLine();
+                if (DateOnly.TryParse(input, out n) || isNullAllow)
+                {
+                    break;
+                }
+                Console.WriteLine("nhap khong hop le, moi nhap lai! ");
+            }
+            return n;
+        }
     }
 }

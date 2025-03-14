@@ -1,4 +1,4 @@
-namespace Assignment_302_QuanLyThuVien.LibraryManager
+namespace Assignment_302_QuanLyThuVien
 {
     public class Reader
     {
@@ -6,17 +6,17 @@ namespace Assignment_302_QuanLyThuVien.LibraryManager
             string readerID;
             string name;
             string address;
-            string phoneNumber;
+            int phoneNumber;
         #endregion
 
         #region properties
             public string ReaderID { get => readerID; set => readerID = value; }
             public string Name { get => name; set => name = value; }
             public string Address { get => address; set => address = value; }
-            public string PhoneNumber { get => phoneNumber; set => phoneNumber = value; }
+            public int PhoneNumber { get => phoneNumber; set => phoneNumber = value; }
         #endregion
 
-        public Reader(string readerID, string name, string address, string phoneNumber)
+        public Reader(string readerID, string name, string address, int phoneNumber)
         {
             this.readerID = readerID;
             this.name = name;
