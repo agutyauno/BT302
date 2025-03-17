@@ -33,7 +33,7 @@ namespace Assignment_302_QuanLyThuVien
                 return;
             }
             bool isDone = false;
-            while (isDone)
+            while (!isDone)
             {
                 ShowReader(r);
                 switch (InputCheck.Int("Chon thong tin can chinh sua \n1. Ho va ten | 2. Dia chi | 3. So dien thoai | 0. Thoat"))
@@ -135,5 +135,80 @@ namespace Assignment_302_QuanLyThuVien
             }
             return find;
         }
+
+        public List<Reader> SearchByName()
+        {
+            Console.WriteLine("Tim kiem theo ten nguoi doc");
+            string searchName = InputCheck.String("Nhap ten nguoi doc can tim: ");
+            
+            // Tim tat ca doc gia co ten chua chuoi tim kiem (khong phan biet hoa thuong)
+            List<Reader> foundReaders = readerList.FindAll(r => 
+                r.Name.ToLower().Contains(searchName.ToLower()));
+                
+            if (foundReaders.Count == 0)
+            {
+                Console.WriteLine("Khong tim thay nguoi doc nao co ten chua: " + searchName);
+            }
+            else
+            {
+                Console.WriteLine($"Da tim thay {foundReaders.Count} nguoi doc co ten chua: {searchName}");
+            }
+            
+            return foundReaders;
+        }
+
+        #region file operations
+        public void SaveToFile(string filePath = "readers.txt")
+        {
+            try
+            {
+                using StreamWriter writer = new(filePath);
+                foreach (Reader reader in readerList)
+                {
+                    writer.WriteLine($"{reader.ReaderID}|{reader.Name}|{reader.Address}|{reader.PhoneNumber}");
+                }
+                Console.WriteLine($"Danh sach doc gia da duoc luu vao file: {filePath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Loi khi luu file: {ex.Message}");
+            }
+        }
+
+        public void LoadFromFile(string filePath = "readers.txt")
+        {
+            try
+            {
+                if (!File.Exists(filePath))
+                {
+                    Console.WriteLine($"File {filePath} khong ton tai.");
+                    return;
+                }
+
+                readerList.Clear();
+                using StreamReader reader = new(filePath);
+                string? line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    string[] parts = line.Split('|');
+                    if (parts.Length == 4 && int.TryParse(parts[3], out int phoneNumber))
+                    {
+                        Reader r = new(
+                            parts[0],   // ReaderID
+                            parts[1],   // Name
+                            parts[2],   // Address
+                            phoneNumber // PhoneNumber
+                        );
+                        readerList.Add(r);
+                    }
+                }
+                Console.WriteLine($"Da doc {readerList.Count} doc gia tu file: {filePath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Loi khi doc file: {ex.Message}");
+            }
+        }
+        #endregion
     }
 }

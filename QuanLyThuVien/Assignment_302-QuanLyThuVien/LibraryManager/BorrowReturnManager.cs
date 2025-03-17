@@ -130,5 +130,83 @@ namespace Assignment_302_QuanLyThuVien
             }
 
         }
+
+        #region file operations
+        public void SaveToFile(string filePath = "borrow_records.txt")
+        {
+            try
+            {
+                using StreamWriter writer = new(filePath);
+                foreach (KeyValuePair<Reader, BorrowDate> record in borrowRecords)
+                {
+                    writer.WriteLine($"{record.Key.ReaderID}|{record.Value.BorrowDay}|{record.Value.ReturnDay}");
+                }
+                Console.WriteLine($"Danh sach muon tra da duoc luu vao file: {filePath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Loi khi luu file: {ex.Message}");
+            }
+        }
+
+        public void LoadFromFile(string filePath = "borrow_records.txt")
+        {
+            try
+            {
+                if (!File.Exists(filePath))
+                {
+                    Console.WriteLine($"File {filePath} khong ton tai.");
+                    return;
+                }
+
+                // Dam bao danh sach doc gia da duoc tai
+                if (readerManager.ReaderList.Count == 0)
+                {
+                    Console.WriteLine("Can tai danh sach doc gia truoc.");
+                    readerManager.LoadFromFile();
+                }
+
+                borrowRecords.Clear();
+                using StreamReader reader = new(filePath);
+                string? line;
+                int successCount = 0;
+                int errorCount = 0;
+
+                while ((line = reader.ReadLine()) != null)
+                {
+                    string[] parts = line.Split('|');
+                    if (parts.Length == 3 && 
+                        DateOnly.TryParse(parts[1], out DateOnly borrowDay) && 
+                        DateOnly.TryParse(parts[2], out DateOnly returnDay))
+                    {
+                        string readerID = parts[0];
+                        Reader? r = readerManager.SearchByID(readerID);
+                        
+                        if (r != null)
+                        {
+                            BorrowDate borrowDate = new(borrowDay, returnDay);
+                            borrowRecords.Add(r, borrowDate);
+                            successCount++;
+                        }
+                        else
+                        {
+                            errorCount++;
+                            Console.WriteLine($"Khong tim thay doc gia co ID: {readerID}");
+                        }
+                    }
+                }
+                
+                Console.WriteLine($"Da doc {successCount} ban ghi muon tra tu file: {filePath}");
+                if (errorCount > 0)
+                {
+                    Console.WriteLine($"Co {errorCount} ban ghi khong hop le.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Loi khi doc file: {ex.Message}");
+            }
+        }
+        #endregion
     }
 }

@@ -75,7 +75,7 @@ namespace Assignment_302_QuanLyThuVien
             }
 
             bool isDone = false;
-            while (isDone)
+            while (!isDone)
             {
                 Console.WriteLine("Nhap thong tin can sua");
                 Console.WriteLine("1. ten sach | 2. tac gia | 3. nam xuat ban | 0. thoat");
@@ -218,7 +218,7 @@ namespace Assignment_302_QuanLyThuVien
         {
             Console.WriteLine("Tim kiem theo ma sach");
             Book? find = books.Find(b => b.BookID == InputCheck.String("Nhap ma sach"));
-            if (find != null)
+            if (find == null)
             {
                 Console.WriteLine("Khong tim thay sach");
             }
@@ -237,6 +237,96 @@ namespace Assignment_302_QuanLyThuVien
         {
             books.Sort((b1, b2) => b1.BookID.CompareTo(b2.BookID));
             ShowAllBooks();
+        }
+        #endregion
+
+        #region file operations
+        public void SaveToFile(string filePath = "books.txt")
+        {
+            try
+            {
+                using StreamWriter writer = new(filePath);
+                foreach (Book book in books)
+                {
+                    if (book is TextBook textBook)
+                    {
+                        writer.WriteLine($"T|{book.BookID}|{book.Title}|{book.Author}|{book.Year}|{textBook.Subject}");
+                    }
+                    else if (book is Novel novel)
+                    {
+                        writer.WriteLine($"N|{book.BookID}|{book.Title}|{book.Author}|{book.Year}|{novel.Genre}");
+                    }
+                }
+                Console.WriteLine($"Danh sach sach da duoc luu vao file: {filePath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Loi khi luu file: {ex.Message}");
+            }
+        }
+
+        public void LoadFromFile(string filePath = "books.txt")
+        {
+            try
+            {
+                if (!File.Exists(filePath))
+                {
+                    Console.WriteLine($"File {filePath} khong ton tai.");
+                    return;
+                }
+
+                books.Clear();
+                using StreamReader reader = new(filePath);
+                string? line;
+                int successCount = 0;
+                int errorCount = 0;
+
+                while ((line = reader.ReadLine()) != null)
+                {
+                    string[] parts = line.Split('|');
+                    if (parts.Length == 6 && int.TryParse(parts[4], out int year))
+                    {
+                        Book? book = null;
+                        string bookType = parts[0];
+                        string bookID = parts[1];
+                        string title = parts[2];
+                        string author = parts[3];
+                        string specialField = parts[5]; // Subject cho TextBook hoặc Genre cho Novel
+
+                        switch (bookType)
+                        {
+                            case "T": // TextBook
+                                book = new TextBook(bookID, title, author, specialField, year);
+                                break;
+                            case "N": // Novel
+                                book = new Novel(bookID, title, author, specialField, year);
+                                break;
+                            default:
+                                errorCount++;
+                                Console.WriteLine($"Loai sach khong hop le: {bookType}");
+                                continue;
+                        }
+
+                        books.Add(book);
+                        successCount++;
+                    }
+                    else
+                    {
+                        errorCount++;
+                        Console.WriteLine("Dinh dang dong khong hop le: " + line);
+                    }
+                }
+                
+                Console.WriteLine($"Da doc {successCount} sach tu file: {filePath}");
+                if (errorCount > 0)
+                {
+                    Console.WriteLine($"Co {errorCount} dong khong hop le.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Loi khi doc file: {ex.Message}");
+            }
         }
         #endregion
     }
